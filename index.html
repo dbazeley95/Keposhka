@@ -189,7 +189,7 @@
             </button>
         </div>
     </div>
-    <div class="footer">Na Na Na Na Na version 0.1</div>
+    <div class="footer">Na Na Na Na Na version 0.2</div>
 </div>
 
 <script>
@@ -206,104 +206,32 @@
     input.value = "ASHTON AND DANIEL";
 
     const glyphs = {
-        'A': (c, w, h) => {
-            c.moveTo(0, h); c.lineTo(w * 0.5, 0); c.lineTo(w * 0.5, h);
-            c.moveTo(w * 0.5, h); c.lineTo(w, 0); c.lineTo(w, h);
-        },
-        'B': (c, w, h) => {
-            c.fillRect(0, 0, w * 0.2, h); c.fillRect(w * 0.8, 0, w * 0.2, h);
-            c.moveTo(w * 0.2, 0); c.lineTo(w * 0.8, h);
-        },
-        'C': (c, w, h) => {
-            c.fillRect(0, 0, w, h * 0.15); c.fillRect(0, h * 0.4, w, h * 0.15);
-            c.fillRect(0, 0, w * 0.2, h * 0.55); c.fillRect(w * 0.8, 0, w * 0.2, h * 0.55);
-        },
-        'D': (c, w, h) => {
-            c.fillRect(0, 0, w * 0.2, h); c.fillRect(w * 0.8, 0, w * 0.2, h);
-            c.fillRect(0, h * 0.45, w, h * 0.15);
-        },
-        'E': (c, w, h) => {
-            c.fillRect(0, 0, w * 0.75, h * 0.15); c.fillRect(0, h * 0.85, w * 0.75, h * 0.15);
-            c.fillRect(w * 0.55, 0, w * 0.2, h);
-        },
-        'F': (c, w, h) => {
-            c.fillRect(0, h * 0.25, w, h * 0.15); c.fillRect(w * 0.4, 0, w * 0.2, h);
-        },
-        'G': (c, w, h) => {
-            c.moveTo(0, 0); c.lineTo(w, 0); c.lineTo(0, h * 0.5);
-            c.lineTo(w, h * 0.5); c.lineTo(0, h); c.lineTo(w, h);
-        },
-        'H': (c, w, h) => {
-            c.moveTo(0, h); c.lineTo(w * 0.5, 0); c.lineTo(w, h); c.closePath();
-        },
-        'I': (c, w, h) => {
-            c.moveTo(0, h); c.lineTo(w * 0.5, 0); c.lineTo(w, h);
-        },
-        'J': (c, w, h) => {
-            c.moveTo(0, 0); c.lineTo(w * 0.5, h * 0.5); c.lineTo(w, 0);
-            c.moveTo(w * 0.5, h * 0.5); c.lineTo(0, h);
-        },
-        'K': (c, w, h) => {
-            c.fillRect(0, 0, w * 0.2, h); c.fillRect(w * 0.8, 0, w * 0.2, h);
-            c.moveTo(0, 0); c.lineTo(w * 0.5, h * 0.5); c.lineTo(w, 0);
-        },
-        'L': (c, w, h) => {
-            c.arc(w * 0.5, h * 0.5, w * 0.4, 0, Math.PI * 2);
-            c.moveTo(w * 0.5, 0); c.lineTo(w * 0.5, h);
-        },
-        'M': (c, w, h) => {
-            c.fillRect(w * 0.4, 0, w * 0.2, h);
-            c.moveTo(0, 0); c.lineTo(w * 0.4, h * 0.5); c.lineTo(0, h);
-            c.moveTo(w, 0); c.lineTo(w * 0.6, h * 0.5); c.lineTo(w, h);
-        },
-        'N': (c, w, h) => {
-            c.strokeRect(0, 0, w, h);
-            c.moveTo(0, 0); c.lineTo(w, h);
-            c.moveTo(w, 0); c.lineTo(0, h);
-        },
-        'O': (c, w, h) => {
-            c.fillRect(0, 0, w * 0.2, h); c.fillRect(w * 0.8, 0, w * 0.2, h);
-            c.fillRect(0, h * 0.85, w, h * 0.15);
-        },
-        'P': (c, w, h) => {
-            c.moveTo(0, 0); c.lineTo(w * 0.25, h); c.lineTo(w * 0.5, 0);
-            c.lineTo(w * 0.75, h); c.lineTo(w, 0);
-        },
-        'Q': (c, w, h) => {
-            c.arc(w * 0.5, h * 0.5, w * 0.45, 0, Math.PI * 2); c.stroke(); c.beginPath();
-            c.arc(w * 0.5, h * 0.5, w * 0.25, 0, Math.PI * 2);
-        },
-        'S': (c, w, h) => {
-            c.fillRect(0, 0, w * 0.16, h); c.fillRect(w * 0.42, 0, w * 0.16, h); c.fillRect(w * 0.84, 0, w * 0.16, h);
-            c.fillRect(0, 0, w, h * 0.15);
-        },
-        'T': (c, w, h) => {
-            c.fillRect(0, 0, w, h * 0.15); c.fillRect(0, h * 0.85, w, h * 0.15);
-            c.moveTo(w, 0); c.lineTo(w * 0.25, h * 0.5); c.lineTo(w, h);
-        },
-        'U': (c, w, h) => {
-            c.fillRect(0, 0, w, h * 0.15);
-            c.moveTo(0, 0); c.lineTo(w * 0.5, h * 0.7); c.lineTo(w, 0);
-        },
-        'V': (c, w, h) => {
-            c.fillRect(0, 0, w * 0.2, h); c.fillRect(w * 0.8, 0, w * 0.2, h);
-            c.fillRect(0, h * 0.42, w, h * 0.15);
-        },
-        'W': (c, w, h) => {
-            c.fillRect(0, 0, w * 0.2, h);
-            c.arc(w * 0.5, h * 0.27, h * 0.27, -Math.PI/2, Math.PI/2); c.stroke(); c.beginPath();
-            c.arc(w * 0.5, h * 0.73, h * 0.27, -Math.PI/2, Math.PI/2);
-        },
-        'X': (c, w, h) => {
-            c.moveTo(0, 0); c.lineTo(w * 0.4, h * 0.5); c.lineTo(0, h);
-            c.moveTo(w, 0); c.lineTo(w * 0.6, h * 0.5); c.lineTo(w, h);
-        },
-        'Y': (c, w, h) => {
-            c.fillRect(w * 0.4, 0, w * 0.2, h); c.fillRect(0, 0, w * 0.6, h * 0.15);
-        },
-        'Z': (c, w, h) => {
-            c.moveTo(0, 0); c.lineTo(w, 0); c.lineTo(0, h); c.lineTo(w, h);
-        }
+        'A': (c, w, h) => { c.moveTo(0, h); c.lineTo(w/2, 0); c.lineTo(w, h); c.moveTo(w/4, h/2); c.lineTo(w*0.75, h/2); },
+        'B': (c, w, h) => { c.fillRect(0, 0, w*0.2, h); c.fillRect(w*0.8, 0, w*0.2, h); c.fillRect(0, 0, w, h*0.15); c.fillRect(0, h*0.45, w*0.8, h*0.15); c.fillRect(0, h*0.85, w, h*0.15); },
+        'C': (c, w, h) => { c.fillRect(0, 0, w*0.2, h); c.fillRect(0, 0, w, h*0.15); c.fillRect(0, h*0.85, w, h*0.15); },
+        'D': (c, w, h) => { c.fillRect(0, 0, w*0.2, h); c.fillRect(w*0.8, 0, w*0.2, h); c.fillRect(0, 0, w, h*0.15); c.fillRect(0, h*0.85, w, h*0.15); },
+        'E': (c, w, h) => { c.fillRect(0, 0, w*0.2, h); c.fillRect(0, 0, w, h*0.15); c.fillRect(0, h*0.45, w*0.7, h*0.15); c.fillRect(0, h*0.85, w, h*0.15); },
+        'F': (c, w, h) => { c.fillRect(0, 0, w*0.2, h); c.fillRect(0, 0, w, h*0.15); c.fillRect(0, h*0.45, w*0.7, h*0.15); },
+        'G': (c, w, h) => { c.fillRect(0, 0, w*0.2, h); c.fillRect(0, 0, w, h*0.15); c.fillRect(w*0.8, 0, w*0.2, h*0.5); c.fillRect(w*0.4, h*0.45, w*0.6, h*0.15); },
+        'H': (c, w, h) => { c.fillRect(0, 0, w*0.2, h); c.fillRect(w*0.8, 0, w*0.2, h); c.fillRect(0, h*0.45, w, h*0.15); },
+        'I': (c, w, h) => { c.fillRect(w*0.4, 0, w*0.2, h); c.fillRect(0, 0, w, h*0.15); c.fillRect(0, h*0.85, w, h*0.15); },
+        'J': (c, w, h) => { c.fillRect(w*0.8, 0, w*0.2, h*0.8); c.arc(w*0.4, h*0.8, w*0.4, 0, Math.PI); },
+        'K': (c, w, h) => { c.fillRect(0, 0, w*0.2, h); c.moveTo(w*0.2, h*0.4); c.lineTo(w, 0); c.moveTo(w*0.2, h*0.4); c.lineTo(w, h); },
+        'L': (c, w, h) => { c.fillRect(0, 0, w*0.2, h); c.fillRect(0, h*0.85, w, h*0.15); },
+        'M': (c, w, h) => { c.fillRect(0, 0, w*0.2, h); c.fillRect(w*0.8, 0, w*0.2, h); c.moveTo(0, 0); c.lineTo(w/2, h/2); c.lineTo(w, 0); },
+        'N': (c, w, h) => { c.fillRect(0, 0, w*0.2, h); c.fillRect(w*0.8, 0, w*0.2, h); c.moveTo(0, 0); c.lineTo(w, h); },
+        'O': (c, w, h) => { c.fillRect(0, 0, w*0.2, h); c.fillRect(w*0.8, 0, w*0.2, h); c.fillRect(0, 0, w, h*0.15); c.fillRect(0, h*0.85, w, h*0.15); },
+        'P': (c, w, h) => { c.fillRect(0, 0, w*0.2, h); c.fillRect(0, 0, w, h*0.15); c.fillRect(0, h*0.45, w, h*0.15); c.fillRect(w*0.8, 0, w*0.2, h*0.6); },
+        'Q': (c, w, h) => { c.arc(w/2, h/2, w*0.4, 0, Math.PI*2); c.moveTo(w*0.6, h*0.6); c.lineTo(w, h); },
+        'R': (c, w, h) => { c.fillRect(0, 0, w*0.2, h); c.fillRect(0, 0, w, h*0.15); c.fillRect(0, h*0.45, w, h*0.15); c.fillRect(w*0.8, 0, w*0.2, h*0.6); c.moveTo(w*0.3, h*0.6); c.lineTo(w, h); },
+        'S': (c, w, h) => { c.fillRect(0, 0, w, h*0.15); c.fillRect(0, h*0.45, w, h*0.15); c.fillRect(0, h*0.85, w, h*0.15); c.fillRect(0, 0, w*0.2, h*0.5); c.fillRect(w*0.8, h*0.5, w*0.2, h*0.5); },
+        'T': (c, w, h) => { c.fillRect(w*0.4, 0, w*0.2, h); c.fillRect(0, 0, w, h*0.15); },
+        'U': (c, w, h) => { c.fillRect(0, 0, w*0.2, h*0.8); c.fillRect(w*0.8, 0, w*0.2, h*0.8); c.fillRect(0, h*0.85, w, h*0.15); },
+        'V': (c, w, h) => { c.moveTo(0, 0); c.lineTo(w/2, h); c.lineTo(w, 0); },
+        'W': (c, w, h) => { c.moveTo(0, 0); c.lineTo(w*0.25, h); c.lineTo(w*0.5, 0); c.lineTo(w*0.75, h); c.lineTo(w, 0); },
+        'X': (c, w, h) => { c.moveTo(0, 0); c.lineTo(w, h); c.moveTo(w, 0); c.lineTo(0, h); },
+        'Y': (c, w, h) => { c.moveTo(0, 0); c.lineTo(w/2, h/2); c.lineTo(w, 0); c.moveTo(w/2, h/2); c.lineTo(w/2, h); },
+        'Z': (c, w, h) => { c.fillRect(0, 0, w, h*0.15); c.fillRect(0, h*0.85, w, h*0.15); c.moveTo(w, 0); c.lineTo(0, h); }
     };
 
     function renderStudio() {
