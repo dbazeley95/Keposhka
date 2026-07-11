@@ -101,27 +101,40 @@
             letter-spacing: 1px;
         }
         
-        /* Modern styled native color wrapper */
-        .color-picker-wrapper {
-            position: relative;
-            width: 100%;
-            height: 44px;
-            border-radius: 6px;
-            border: 1px solid #444;
+        /* Re-engineered Custom Color Circle Display */
+        .color-wheel-box {
+            display: flex;
+            align-items: center;
+            justify-content: center;
             background-color: var(--bg-panel);
-            overflow: hidden;
-            cursor: pointer;
+            border: 1px solid #444;
+            padding: 12px;
+            border-radius: 6px;
+            position: relative;
         }
 
-        input[type="color"] {
-            position: absolute;
-            top: -5px;
-            left: -5px;
-            width: calc(100% + 10px);
-            height: calc(100% + 10px);
-            border: none;
-            background: none;
+        .color-circle-preview {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 4px solid #fff;
+            box-shadow: 0 0 0 2px #000, 0 4px 10px rgba(0,0,0,0.5);
+            background-color: #ff2a2a;
             cursor: pointer;
+            transition: transform 0.1s;
+        }
+
+        .color-circle-preview:active {
+            transform: scale(0.95);
+        }
+
+        #inkColor {
+            position: absolute;
+            opacity: 0;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+            z-index: 2;
         }
 
         input[type="range"] { 
@@ -129,7 +142,6 @@
             width: 100%;
         }
 
-        /* Beautiful native dropdown styling override */
         select {
             background-color: var(--bg-panel);
             color: #fff;
@@ -260,7 +272,8 @@
         <div class="controls">
             <div class="control-group">
                 <label>Ink Color</label>
-                <div class="color-picker-wrapper">
+                <div class="color-wheel-box">
+                    <div class="color-circle-preview" id="colorPreview"></div>
                     <input type="color" id="inkColor" value="#ff2a2a">
                 </div>
             </div>
@@ -296,7 +309,7 @@
     
     <div class="footer">
         <div class="footer-line1">Na Na Na Na Na</div>
-        <div class="footer-line2">Version 5.0</div>
+        <div class="footer-line2">Version 6.0</div>
     </div>
 </div>
 
@@ -307,6 +320,7 @@
     const wrapper = document.getElementById('canvasContainer');
     const scaleInput = document.getElementById('scale');
     const colorInput = document.getElementById('inkColor');
+    const colorPreview = document.getElementById('colorPreview');
     const alignSelect = document.getElementById('textAlign');
     const boldCheckbox = document.getElementById('boldToggle');
 
@@ -317,8 +331,11 @@
         const isBold = boldCheckbox.checked;
         const padding = 20;
         
-        // Mobile clipping fix: Add explicit right-side layout buffer safety zone
-        const availableWidth = wrapper.clientWidth - (padding * 2) - 10;
+        // Match the live UI preview color to the underlying system input value
+        colorPreview.style.backgroundColor = colorInput.value;
+
+        // Tighter text layout engine boundaries to stop mobile screen line-clipping
+        const availableWidth = wrapper.clientWidth - (padding * 2) - 20;
         canvas.width = wrapper.clientWidth - (padding * 2);
 
         ctx.font = `${fontSize}px Keposhka, sans-serif`;
