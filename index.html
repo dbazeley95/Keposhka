@@ -5,6 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Keposhka Creator & Studio</title>
     <style>
+        /* Load your custom font! */
+        @font-face {
+            font-family: 'Keposhka';
+            src: url('keposhka.ttf') format('truetype');
+        }
+
         :root {
             --bg-dark: #0c0c0c;
             --bg-panel: #161616;
@@ -184,13 +190,10 @@
                 <input type="color" id="inkColor" value="#ff2a2a">
             </div>
             <div class="control-group">
-                <label>Glyph Size</label>
-                <input type="range" id="scale" min="15" max="60" value="35">
+                <label>Font Size</label>
+                <input type="range" id="scale" min="20" max="100" value="50">
             </div>
-            <div class="control-group">
-                <label>Line Weight</label>
-                <input type="range" id="weight" min="5" max="25" value="15">
-            </div>
+            <!-- Line Weight slider removed, as weight is now handled natively by your font! -->
         </div>
         
         <div class="main-panel">
@@ -204,7 +207,7 @@
         </div>
     </div>
     
-    <div class="footer">Na Na Na Na Na Version 2.0</div>
+    <div class="footer">Na Na Na Na Na Version 3.0</div>
 </div>
 
 <script>
@@ -213,148 +216,77 @@
     const ctx = canvas.getContext('2d');
     const wrapper = document.getElementById('canvasContainer');
     const scaleInput = document.getElementById('scale');
-    const weightInput = document.getElementById('weight');
     const colorInput = document.getElementById('inkColor');
-    
-    // Accurate glyph paths mapped from the hand-drawn reference image
-    const glyphs = {
-        'A': (c,x,y,w,h) => { c.moveTo(x+w/2,y); c.lineTo(x+w,y+h); c.moveTo(x+w/2,y); c.lineTo(x,y+h); c.moveTo(x+w*0.75,y+h/2); c.lineTo(x-w*0.25,y+h/2); },
-        'B': (c,x,y,w,h) => { c.moveTo(x,y+h); c.lineTo(x,y); c.lineTo(x+w,y+h); c.lineTo(x+w,y); },
-        'C': (c,x,y,w,h) => { c.moveTo(x+w,y); c.lineTo(x,y); c.lineTo(x,y+h); c.lineTo(x+w,y+h); c.moveTo(x,y+h/2); c.lineTo(x+w*0.8,y+h/2); },
-        'D': (c,x,y,w,h) => { c.rect(x,y,w,h*0.7); c.moveTo(x,y+h*0.7); c.lineTo(x,y+h); c.moveTo(x,y+h*0.35); c.lineTo(x+w,y+h*0.35); },
-        'E': (c,x,y,w,h) => { c.moveTo(x,y); c.lineTo(x+w,y); c.lineTo(x+w,y+h); c.lineTo(x,y+h); c.moveTo(x+w,y+h/2); c.lineTo(x+w*0.2,y+h/2); },
-        'F': (c,x,y,w,h) => { c.moveTo(x,y); c.lineTo(x+w,y); c.moveTo(x+w/2,y); c.lineTo(x+w/2,y+h); c.moveTo(x+w*0.2,y+h/2); c.lineTo(x+w*0.8,y+h/2); },
-        'G': (c,x,y,w,h) => { c.moveTo(x,y); c.lineTo(x+w,y); c.lineTo(x,y+h); c.lineTo(x+w,y+h); },
-        'H': (c,x,y,w,h) => { c.moveTo(x+w/2,y); c.lineTo(x,y+h); c.lineTo(x+w,y+h); c.closePath(); },
-        'I': (c,x,y,w,h) => { c.moveTo(x+w/2,y); c.lineTo(x,y+h); c.moveTo(x+w/2,y); c.lineTo(x+w,y+h); },
-        'J': (c,x,y,w,h) => { c.moveTo(x,y); c.lineTo(x+w/2,y+h/2); c.lineTo(x+w,y); c.moveTo(x+w/2,y+h/2); c.lineTo(x+w/2,y+h); },
-        'K': (c,x,y,w,h) => { c.moveTo(x,y+h); c.lineTo(x,y); c.lineTo(x+w/2,y+h/2); c.lineTo(x+w,y); c.lineTo(x+w,y+h); },
-        'L': (c,x,y,w,h) => { c.arc(x+w/2,y+h/2,w/2,0,Math.PI*2); c.moveTo(x+w/2,y-h*0.1); c.lineTo(x+w/2,y+h*1.1); },
-        'M': (c,x,y,w,h) => { c.moveTo(x+w,y); c.lineTo(x+w,y+h); c.moveTo(x+w,y); c.lineTo(x,y+h/2); c.lineTo(x+w,y+h); },
-        'N': (c,x,y,w,h) => { c.moveTo(x,y); c.lineTo(x+w,y); c.moveTo(x,y+h); c.lineTo(x+w,y+h); c.moveTo(x,y); c.lineTo(x+w,y+h); c.moveTo(x+w,y); c.lineTo(x,y+h); },
-        'O': (c,x,y,w,h) => { c.moveTo(x,y); c.lineTo(x,y+h); c.lineTo(x+w,y+h); c.lineTo(x+w,y); },
-        'P': (c,x,y,w,h) => { c.moveTo(x,y); c.lineTo(x+w*0.25,y+h); c.lineTo(x+w*0.5,y+h/2); c.lineTo(x+w*0.75,y+h); c.lineTo(x+w,y); },
-        'Q': (c,x,y,w,h) => { c.arc(x+w/2,y+h/2,w/2,0,Math.PI*2); },
-        'R': (c,x,y,w,h) => { c.moveTo(x+w,y); c.lineTo(x,y); c.lineTo(x,y+h); c.moveTo(x+w,y+h/2); c.lineTo(x,y+h/2); }, // Fallback from previous version
-        'S': (c,x,y,w,h) => { c.moveTo(x,y+h); c.lineTo(x,y); c.lineTo(x+w,y); c.lineTo(x+w,y+h); c.moveTo(x+w/2,y); c.lineTo(x+w/2,y+h); },
-        'T': (c,x,y,w,h) => { c.moveTo(x+w,y); c.lineTo(x,y); c.lineTo(x+w/2,y+h/2); c.lineTo(x,y+h); c.lineTo(x+w,y+h); },
-        'U': (c,x,y,w,h) => { c.moveTo(x,y+h); c.lineTo(x+w/2,y); c.lineTo(x+w,y+h); c.moveTo(x+w*0.25,y+h/2); c.lineTo(x+w*0.75,y+h/2); },
-        'V': (c,x,y,w,h) => { c.moveTo(x,y); c.lineTo(x,y+h); c.moveTo(x+w,y); c.lineTo(x+w,y+h); c.moveTo(x,y+h/2); c.lineTo(x+w,y+h/2); },
-        'W': (c,x,y,w,h) => { c.moveTo(x,y); c.lineTo(x,y+h); c.lineTo(x+w*0.7,y+h); c.lineTo(x+w,y+h*0.75); c.lineTo(x+w*0.7,y+h*0.5); c.lineTo(x,y+h*0.5); c.moveTo(x+w*0.7,y+h*0.5); c.lineTo(x+w,y+h*0.25); c.lineTo(x+w*0.7,y); c.lineTo(x,y); },
-        'X': (c,x,y,w,h) => { c.moveTo(x+w,y); c.lineTo(x+w,y+h); c.lineTo(x,y+h); c.lineTo(x,y+h*0.5); },
-        'Y': (c,x,y,w,h) => { c.moveTo(x,y); c.lineTo(x,y+h); c.lineTo(x+w,y+h); },
-        'Z': (c,x,y,w,h) => { c.rect(x,y,w/2,h/2); c.moveTo(x+w/2,y); c.lineTo(x+w/2,y+h); },
-        '1': (c,x,y,w,h) => { c.moveTo(x+w*0.2,y+h*0.2); c.lineTo(x+w/2,y); c.lineTo(x+w/2,y+h); c.moveTo(x+w*0.2,y+h); c.lineTo(x+w*0.8,y+h); },
-        '2': (c,x,y,w,h) => { c.moveTo(x,y+h*0.2); c.lineTo(x+w/2,y); c.lineTo(x+w,y+h*0.2); c.lineTo(x,y+h); c.lineTo(x+w,y+h); },
-        '3': (c,x,y,w,h) => { c.moveTo(x,y); c.lineTo(x+w,y); c.lineTo(x+w/2,y+h/2); c.lineTo(x+w,y+h); c.lineTo(x,y+h); },
-        '4': (c,x,y,w,h) => { c.moveTo(x+w*0.8,y+h); c.lineTo(x+w*0.8,y); c.lineTo(x,y+h*0.6); c.lineTo(x+w,y+h*0.6); },
-        '5': (c,x,y,w,h) => { c.moveTo(x+w,y); c.lineTo(x,y); c.lineTo(x,y+h*0.4); c.lineTo(x+w*0.8,y+h*0.4); c.lineTo(x+w,y+h*0.7); c.lineTo(x+w*0.5,y+h); c.lineTo(x,y+h*0.8); },
-        '6': (c,x,y,w,h) => { c.moveTo(x+w,y); c.lineTo(x,y+h*0.5); c.lineTo(x,y+h); c.lineTo(x+w,y+h); c.lineTo(x+w,y+h*0.5); c.lineTo(x,y+h*0.5); },
-        '7': (c,x,y,w,h) => { c.moveTo(x,y); c.lineTo(x+w,y); c.lineTo(x+w*0.3,y+h); },
-        '8': (c,x,y,w,h) => { c.rect(x,y,w,h/2); c.rect(x,y+h/2,w,h/2); },
-        '9': (c,x,y,w,h) => { c.moveTo(x,y+h); c.lineTo(x+w,y+h*0.5); c.lineTo(x+w,y); c.lineTo(x,y); c.lineTo(x,y+h*0.5); c.lineTo(x+w,y+h*0.5); },
-        '0': (c,x,y,w,h) => { c.moveTo(x+w/2,y); c.lineTo(x+w,y+h/2); c.lineTo(x+w/2,y+h); c.lineTo(x,y+h/2); c.closePath(); }
-    };
 
     function renderStudio() {
         const text = input.value.toUpperCase();
-        const scale = parseInt(scaleInput.value);
-        const w = scale;
-        const h = scale * 1.2; // Rectangular proportion matching drawing
-        const spacing = w * 0.5; // Space between letters
+        const fontSize = parseInt(scaleInput.value);
         const padding = 20;
         
-        // 1. Dynamic Width
+        // 1. Set canvas width dynamically to fit the screen
         const availableWidth = wrapper.clientWidth - (padding * 2);
         canvas.width = availableWidth;
 
-        // 2. Wrap Calculation
-        let simX = 0, simY = 0;
-        let words = text.split(' ');
+        // Apply font early to measure text correctly
+        ctx.font = `${fontSize}px Keposhka, sans-serif`;
         
-        for (let word of words) {
-            let wordWidth = (word.length * w) + ((word.length - 1) * spacing);
+        // 2. Word wrapping logic (Native canvas text measurement)
+        const words = text.split(' ');
+        let lines = [];
+        let currentLine = '';
+
+        for (let i = 0; i < words.length; i++) {
+            let testLine = currentLine + words[i] + ' ';
+            let metrics = ctx.measureText(testLine);
+            let testWidth = metrics.width;
             
-            // Break word onto new line if it doesn't fit
-            if (simX + wordWidth > availableWidth && simX > 0) {
-                simX = 0;
-                simY += h * 1.8; // Line height
-            }
-            
-            // Very long word fallback (breaks characters)
-            if (wordWidth > availableWidth) {
-                for(let char of word) {
-                    if(simX + w > availableWidth) {
-                        simX = 0;
-                        simY += h * 1.8;
-                    }
-                    simX += w + spacing;
-                }
+            if (testWidth > availableWidth && i > 0) {
+                lines.push(currentLine);
+                currentLine = words[i] + ' ';
             } else {
-                simX += wordWidth + (w * 0.8); // Add space width
+                currentLine = testLine;
             }
         }
-        
-        // 3. Dynamic Height
-        canvas.height = simY + (h * 1.5) + (padding * 2);
+        lines.push(currentLine); // Push the final line
 
-        // 4. Draw
-        ctx.fillStyle = '#000'; 
+        // 3. Set dynamic height based on the number of wrapped lines
+        const lineHeight = fontSize * 1.2;
+        canvas.height = (lines.length * lineHeight) + (padding * 2);
+
+        // 4. Final Render
+        ctx.fillStyle = '#000'; // Black background
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         
-        ctx.strokeStyle = colorInput.value;
-        ctx.lineWidth = scale * (parseInt(weightInput.value) / 100); 
-        ctx.lineCap = 'square';
-        ctx.lineJoin = 'miter';
-        
-        let curX = 0, curY = padding;
-        
-        for (let word of words) {
-            let wordWidth = (word.length * w) + ((word.length - 1) * spacing);
-            
-            if (curX + wordWidth > availableWidth && curX > 0) {
-                curX = 0;
-                curY += h * 1.8;
-            }
-            
-            for (let char of word) {
-                if (curX + w > availableWidth) {
-                    curX = 0;
-                    curY += h * 1.8;
-                }
+        // Setting canvas dimensions resets context, so re-apply font and color
+        ctx.font = `${fontSize}px Keposhka, sans-serif`;
+        ctx.textBaseline = 'top';
+        ctx.fillStyle = colorInput.value; // Text color
 
-                if (glyphs[char]) {
-                    ctx.beginPath();
-                    glyphs[char](ctx, curX + padding, curY, w, h);
-                    ctx.stroke();
-                } else if (char.match(/[A-Z0-9]/)) {
-                    // Fallback for missing characters
-                    ctx.font = `bold ${h}px sans-serif`;
-                    ctx.fillStyle = colorInput.value;
-                    ctx.fillText(char, curX + padding, curY + h);
-                }
-                curX += w + spacing;
-            }
-            curX += w * 0.5; // Space character width
+        let curY = padding;
+        for (let line of lines) {
+            ctx.fillText(line, padding, curY);
+            curY += lineHeight;
         }
     }
 
-    // Real-time listeners
+    // Wait for the custom font to load before drawing the canvas for the first time
+    document.fonts.ready.then(() => {
+        renderStudio();
+    });
+
+    // Real-time update listeners
     ['input', 'change'].forEach(evt => {
         document.body.addEventListener(evt, renderStudio);
     });
     window.addEventListener('resize', renderStudio);
     
-    // Download
+    // Download logic
     document.getElementById('downloadBtn').onclick = () => {
         const link = document.createElement('a'); 
         link.download = 'keposhka-translation.png'; 
         link.href = canvas.toDataURL('image/png'); 
         link.click();
     };
-    
-    // Init
-    setTimeout(renderStudio, 50); 
 </script>
 </body>
 </html>
