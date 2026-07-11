@@ -101,7 +101,6 @@
             letter-spacing: 1px;
         }
         
-        /* Re-engineered Custom Color Circle Display */
         .color-wheel-box {
             display: flex;
             align-items: center;
@@ -124,11 +123,7 @@
             transition: transform 0.1s;
         }
 
-        .color-circle-preview:active {
-            transform: scale(0.95);
-        }
-
-        #inkColor {
+        input[type="color"] {
             position: absolute;
             opacity: 0;
             width: 40px;
@@ -158,11 +153,6 @@
             background-size: 16px;
             padding-right: 40px;
             transition: border-color 0.2s;
-        }
-
-        select:focus {
-            outline: none;
-            border-color: var(--accent);
         }
 
         .checkbox-label {
@@ -200,11 +190,6 @@
             font-size: 16px;
             resize: vertical;
         }
-        
-        textarea:focus {
-            outline: none;
-            border-color: var(--accent);
-        }
 
         .output-wrapper { 
             background-color: #000; 
@@ -232,16 +217,11 @@
             letter-spacing: 1px;
             border-radius: 6px; 
             cursor: pointer; 
-            transition: background 0.2s, transform 0.1s;
         }
-        
-        .btn-download:hover { background-color: #e01b1b; }
-        .btn-download:active { transform: scale(0.99); }
         
         .footer { 
             margin-top: 30px; 
             text-align: center; 
-            text-transform: uppercase; 
             letter-spacing: 2px; 
             display: flex;
             flex-direction: column;
@@ -309,7 +289,7 @@
     
     <div class="footer">
         <div class="footer-line1">Na Na Na Na Na</div>
-        <div class="footer-line2">Version 6.0</div>
+        <div class="footer-line2">Version 6.1</div>
     </div>
 </div>
 
@@ -331,29 +311,21 @@
         const isBold = boldCheckbox.checked;
         const padding = 20;
         
-        // Match the live UI preview color to the underlying system input value
         colorPreview.style.backgroundColor = colorInput.value;
-
-        // Tighter text layout engine boundaries to stop mobile screen line-clipping
-        const availableWidth = wrapper.clientWidth - (padding * 2) - 20;
-        canvas.width = wrapper.clientWidth - (padding * 2);
+        canvas.width = wrapper.clientWidth;
+        const availableWidth = canvas.width - (padding * 2);
 
         ctx.font = `${fontSize}px Keposhka, sans-serif`;
         
         const paragraphs = text.split('\n');
         let lines = [];
-
         paragraphs.forEach(paragraph => {
             const words = paragraph.split(' ');
             let currentLine = '';
-
             for (let i = 0; i < words.length; i++) {
                 if (words[i] === '' && i > 0) continue; 
-                
                 let testLine = currentLine + (currentLine === '' ? '' : ' ') + words[i];
-                let metrics = ctx.measureText(testLine);
-                
-                if (metrics.width > availableWidth && i > 0) {
+                if (ctx.measureText(testLine).width > availableWidth && i > 0) {
                     lines.push(currentLine);
                     currentLine = words[i];
                 } else {
@@ -366,7 +338,6 @@
         const lineHeight = fontSize * 1.3;
         canvas.height = (lines.length * lineHeight) + (padding * 2);
 
-        // Render Background
         ctx.fillStyle = '#000';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         
@@ -376,49 +347,34 @@
 
         let curY = padding;
         lines.forEach(line => {
-            let lineMetrics = ctx.measureText(line);
+            let width = ctx.measureText(line).width;
             let drawX = padding; 
-
-            if (alignment === 'center') {
-                drawX = padding + (availableWidth - lineMetrics.width) / 2;
-            } else if (alignment === 'right') {
-                drawX = padding + (availableWidth - lineMetrics.width);
-            }
+            if (alignment === 'center') drawX = (canvas.width - width) / 2;
+            else if (alignment === 'right') drawX = canvas.width - width - padding;
 
             ctx.fillText(line, drawX, curY);
-            
             if (isBold) {
                 ctx.fillText(line, drawX + 1, curY);
                 ctx.fillText(line, drawX, curY + 1);
             }
-            
             curY += lineHeight;
         });
     }
 
-    function checkFontAndRender() {
-        if (document.fonts.check('12px Keposhka')) {
-            renderStudio();
-        } else {
-            requestAnimationFrame(checkFontAndRender);
-        }
-    }
-
     document.fonts.ready.then(() => {
-        checkFontAndRender();
+        // High-precision init
+        function init() {
+            if (document.fonts.check('12px Keposhka')) renderStudio();
+            else requestAnimationFrame(init);
+        }
+        init();
     });
 
-    ['input', 'change'].forEach(evt => {
-        document.body.addEventListener(evt, renderStudio);
-    });
+    ['input', 'change'].forEach(evt => document.body.addEventListener(evt, renderStudio));
     window.addEventListener('resize', renderStudio);
     
     document.getElementById('downloadBtn').onclick = () => {
-        let rawName = input.value.trim().split('\n')[0] || 'keposhka';
-        let cleanName = rawName.toLowerCase().replace(/[^a-z0-9_-]/g, '_').substring(0, 50);
-        
-        if (!cleanName || cleanName === '_') cleanName = 'keposhka_design';
-
+        let cleanName = (input.value.trim().split('\n')[0] || 'keposhka').toLowerCase().replace(/[^a-z0-9_-]/g, '_').substring(0, 30);
         const link = document.createElement('a'); 
         link.download = `${cleanName}.png`; 
         link.href = canvas.toDataURL('image/png'); 
