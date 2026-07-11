@@ -5,76 +5,246 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Keposhka Creator & Studio</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: #0c0c0c; color: #e0e0e0; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; margin: 0; padding: 20px; }
-        .container { background-color: #161616; padding: 30px; border-radius: 12px; box-shadow: 0 8px 30px rgba(0,0,0,0.7); max-width: 800px; width: 100%; border-top: 5px solid #ff2a2a; }
-        h1 { color: #ff2a2a; margin: 0 0 5px 0; font-size: 26px; letter-spacing: 3px; text-transform: uppercase; text-align: center; }
-        .subtitle { color: #888; font-size: 13px; margin-bottom: 25px; text-align: center; text-transform: uppercase; letter-spacing: 1px; }
-        .controls { background-color: #1f1f1f; padding: 20px; border-radius: 8px; display: flex; flex-direction: column; gap: 15px; margin-bottom: 20px; }
-        label { font-size: 12px; color: #b3b3b3; text-transform: uppercase; }
-        textarea { width: 100%; height: 100px; background-color: #1f1f1f; border: 1px solid #333; color: #fff; padding: 10px; border-radius: 8px; box-sizing: border-box; }
-        .output-container { background-color: #000; padding: 20px; border-radius: 8px; display: flex; justify-content: center; }
-        canvas { max-width: 100%; background-color: #000; }
-        .btn-download { background-color: #ff2a2a; color: white; border: none; padding: 12px; width: 100%; font-weight: bold; text-transform: uppercase; border-radius: 6px; cursor: pointer; margin-top: 10px; }
-        .footer { margin-top: 20px; text-align: center; font-size: 10px; color: #555; text-transform: uppercase; }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background-color: #0c0c0c; 
+            color: #e0e0e0; 
+            margin: 0; 
+            padding: 20px; 
+            display: flex; 
+            justify-content: center; 
+        }
+        .container { 
+            background-color: #161616; 
+            padding: 25px; 
+            border-radius: 12px; 
+            box-shadow: 0 8px 30px rgba(0,0,0,0.7); 
+            max-width: 800px; 
+            width: 100%; 
+            border-top: 5px solid #ff2a2a; 
+        }
+        h1 { 
+            color: #ff2a2a; 
+            margin: 0 0 5px 0; 
+            font-size: 24px; 
+            letter-spacing: 2px; 
+            text-transform: uppercase; 
+            text-align: center; 
+        }
+        .subtitle { 
+            color: #888; 
+            font-size: 12px; 
+            margin-bottom: 25px; 
+            text-align: center; 
+            text-transform: uppercase; 
+            letter-spacing: 1px; 
+        }
+        .controls { 
+            background-color: #1f1f1f; 
+            padding: 15px; 
+            border-radius: 8px; 
+            display: flex; 
+            flex-direction: column; 
+            gap: 10px; 
+            margin-bottom: 20px; 
+        }
+        label { 
+            font-size: 12px; 
+            color: #b3b3b3; 
+            text-transform: uppercase; 
+            font-weight: bold;
+        }
+        input[type="range"] { accent-color: #ff2a2a; }
+        textarea { 
+            width: 100%; 
+            height: 90px; 
+            background-color: #1f1f1f; 
+            border: 1px solid #333; 
+            color: #fff; 
+            padding: 12px; 
+            border-radius: 8px; 
+            box-sizing: border-box; 
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+        .output-wrapper { 
+            background-color: #000; 
+            padding: 20px; 
+            border-radius: 8px; 
+            width: 100%; 
+            box-sizing: border-box; 
+            overflow: hidden; /* Prevents horizontal scroll on mobile */
+        }
+        canvas { 
+            display: block; 
+            width: 100%; 
+        }
+        .btn-download { 
+            background-color: #ff2a2a; 
+            color: white; 
+            border: none; 
+            padding: 14px; 
+            width: 100%; 
+            font-weight: bold; 
+            font-size: 14px;
+            text-transform: uppercase; 
+            border-radius: 6px; 
+            cursor: pointer; 
+            margin-top: 20px; 
+            transition: background 0.2s;
+        }
+        .btn-download:hover { background-color: #e01b1b; }
+        .footer { 
+            margin-top: 25px; 
+            text-align: center; 
+            font-size: 11px; 
+            color: #555; 
+            text-transform: uppercase; 
+            letter-spacing: 2px; 
+        }
     </style>
 </head>
 <body>
 <div class="container">
     <h1>Keposhka Creator & Studio</h1>
+    <div class="subtitle">The Official Tooling of Draag</div>
+    
     <div class="controls">
-        <label>Ink Color</label><input type="color" id="inkColor" value="#ff2a2a">
-        <label>Glyph Size</label><input type="range" id="scale" min="20" max="60" value="40">
+        <label>Ink Color</label>
+        <input type="color" id="inkColor" value="#ff2a2a" style="width:100%; height:35px; border:none; background:none; cursor:pointer;">
+        
+        <label style="margin-top: 10px;">Glyph Size</label>
+        <input type="range" id="scale" min="15" max="60" value="30">
     </div>
+    
     <textarea id="englishInput">ASHTON AND DANIEL</textarea>
-    <div class="output-container">
-        <canvas id="studioCanvas" width="700" height="250"></canvas>
+    
+    <div class="output-wrapper" id="canvasContainer">
+        <canvas id="studioCanvas"></canvas>
     </div>
+    
     <button class="btn-download" id="downloadBtn">💾 Export Graphic (PNG)</button>
-    <div class="footer">Na Na Na Na Na version 0.6</div>
+    <div class="footer">Na Na Na Na Na Version 1.0</div>
 </div>
 
 <script>
     const input = document.getElementById('englishInput');
     const canvas = document.getElementById('studioCanvas');
     const ctx = canvas.getContext('2d');
+    const wrapper = document.getElementById('canvasContainer');
     
-    // Artistic, stroke-based glyph definitions
+    // Accurate A-Z dictionary mapped directly to the Draag reference chart
+    // Drawn on a 0 to 1 grid ratio so they can scale perfectly.
     const glyphs = {
-        'A': (c, x, y, w, h) => { c.moveTo(x, y+h); c.lineTo(x+w/2, y); c.lineTo(x+w, y+h); c.moveTo(x+w/4, y+h/2); c.lineTo(x+w*0.75, y+h/2); },
-        'S': (c, x, y, w, h) => { c.moveTo(x+w, y); c.lineTo(x, y); c.lineTo(x, y+h/2); c.lineTo(x+w, y+h/2); c.lineTo(x+w, y+h); c.lineTo(x, y+h); },
-        'H': (c, x, y, w, h) => { c.moveTo(x, y); c.lineTo(x, y+h); c.moveTo(x+w, y); c.lineTo(x+w, y+h); c.moveTo(x, y+h/2); c.lineTo(x+w, y+h/2); },
-        'T': (c, x, y, w, h) => { c.moveTo(x, y); c.lineTo(x+w, y); c.moveTo(x+w/2, y); c.lineTo(x+w/2, y+h); },
-        'O': (c, x, y, w, h) => { c.rect(x, y, w, h); },
-        'N': (c, x, y, w, h) => { c.moveTo(x, y+h); c.lineTo(x, y); c.lineTo(x+w, y+h); c.lineTo(x+w, y); },
-        'D': (c, x, y, w, h) => { c.moveTo(x, y); c.lineTo(x+w*0.7, y); c.lineTo(x+w, y+h/2); c.lineTo(x+w*0.7, y+h); c.lineTo(x, y+h); c.closePath(); },
-        'I': (c, x, y, w, h) => { c.moveTo(x+w/2, y); c.lineTo(x+w/2, y+h); },
-        'E': (c, x, y, w, h) => { c.moveTo(x+w, y); c.lineTo(x, y); c.lineTo(x, y+h); c.lineTo(x+w, y+h); c.moveTo(x, y+h/2); c.lineTo(x+w*0.7, y+h/2); },
-        'L': (c, x, y, w, h) => { c.moveTo(x, y); c.lineTo(x, y+h); c.lineTo(x+w, y+h); }
+        'A': (c,x,y,s) => { c.moveTo(x,y); c.lineTo(x+s,y); c.moveTo(x,y); c.lineTo(x,y+s); c.moveTo(x+s,y); c.lineTo(x,y+s); },
+        'B': (c,x,y,s) => { c.moveTo(x,y); c.lineTo(x,y+s); c.moveTo(x+s,y); c.lineTo(x+s,y+s); c.moveTo(x,y); c.lineTo(x+s,y+s); },
+        'C': (c,x,y,s) => { c.moveTo(x+s,y); c.lineTo(x,y); c.lineTo(x,y+s); c.lineTo(x+s,y+s); },
+        'D': (c,x,y,s) => { c.moveTo(x,y); c.lineTo(x,y+s); c.moveTo(x+s,y); c.lineTo(x+s,y+s); c.moveTo(x,y+s/2); c.lineTo(x+s,y+s/2); c.moveTo(x,y+s); c.lineTo(x+s,y+s); },
+        'E': (c,x,y,s) => { c.moveTo(x,y); c.lineTo(x+s,y); c.lineTo(x+s,y+s); c.lineTo(x,y+s); c.moveTo(x+s,y+s/2); c.lineTo(x+s*0.2,y+s/2); },
+        'F': (c,x,y,s) => { c.moveTo(x,y); c.lineTo(x+s,y); c.moveTo(x+s/2,y); c.lineTo(x+s/2,y+s); c.moveTo(x,y+s/2); c.lineTo(x+s,y+s/2); },
+        'G': (c,x,y,s) => { c.moveTo(x,y); c.lineTo(x+s,y); c.lineTo(x,y+s); c.lineTo(x+s,y+s); }, // Z shape
+        'H': (c,x,y,s) => { c.moveTo(x,y+s); c.lineTo(x+s/2,y); c.lineTo(x+s,y+s); c.closePath(); }, // Delta
+        'I': (c,x,y,s) => { c.moveTo(x,y+s); c.lineTo(x+s/2,y); c.lineTo(x+s,y+s); }, // Lambda
+        'J': (c,x,y,s) => { c.moveTo(x,y); c.lineTo(x+s/2,y+s/2); c.lineTo(x+s,y); c.moveTo(x+s/2,y+s/2); c.lineTo(x+s/2,y+s); }, // Cyrillic Y
+        'K': (c,x,y,s) => { c.moveTo(x,y+s); c.lineTo(x,y); c.lineTo(x+s/2,y+s); c.lineTo(x+s,y); c.lineTo(x+s,y+s); }, // M shape
+        'L': (c,x,y,s) => { c.arc(x+s/2,y+s/2,s/2,0,Math.PI*2); c.moveTo(x+s/2,y); c.lineTo(x+s/2,y+s); }, // Phi
+        'M': (c,x,y,s) => { c.moveTo(x+s,y); c.lineTo(x+s,y+s); c.moveTo(x,y); c.lineTo(x+s/2,y+s/2); c.lineTo(x,y+s); }, // Backwards K
+        'N': (c,x,y,s) => { c.rect(x,y,s,s); c.moveTo(x,y); c.lineTo(x+s,y+s); c.moveTo(x+s,y); c.lineTo(x,y+s); }, // Box with X
+        'O': (c,x,y,s) => { c.moveTo(x,y); c.lineTo(x,y+s); c.lineTo(x+s,y+s); c.lineTo(x+s,y); }, // Square U
+        'P': (c,x,y,s) => { c.moveTo(x,y); c.lineTo(x+s*0.25,y+s); c.lineTo(x+s*0.5,y); c.lineTo(x+s*0.75,y+s); c.lineTo(x+s,y); }, // W shape
+        'Q': (c,x,y,s) => { c.arc(x+s/2,y+s/2,s/2,0,Math.PI*2); c.stroke(); c.beginPath(); c.arc(x+s/2,y+s/2,s*0.2,0,Math.PI*2); }, // Target
+        'R': (c,x,y,s) => { c.moveTo(x+s,y+s); c.lineTo(x+s,y); c.lineTo(x,y); c.moveTo(x+s,y+s/2); c.lineTo(x,y+s/2); }, // Backwards F
+        'S': (c,x,y,s) => { c.moveTo(x,y+s); c.lineTo(x,y); c.lineTo(x+s,y); c.lineTo(x+s,y+s); c.moveTo(x+s/2,y); c.lineTo(x+s/2,y+s); }, // Blocky m
+        'T': (c,x,y,s) => { c.moveTo(x+s,y); c.lineTo(x,y); c.lineTo(x+s*0.6,y+s/2); c.lineTo(x,y+s); c.lineTo(x+s,y+s); }, // Sigma
+        'U': (c,x,y,s) => { c.moveTo(x,y+s); c.lineTo(x+s/2,y); c.lineTo(x+s,y+s); c.moveTo(x+s*0.25,y+s/2); c.lineTo(x+s*0.75,y+s/2); }, // A shape
+        'V': (c,x,y,s) => { c.moveTo(x,y); c.lineTo(x,y+s); c.moveTo(x+s,y); c.lineTo(x+s,y+s); c.moveTo(x,y+s/2); c.lineTo(x+s,y+s/2); }, // H shape
+        'W': (c,x,y,s) => { c.rect(x,y,s*0.8,s/2); c.rect(x,y+s/2,s*0.8,s/2); }, // B shape
+        'X': (c,x,y,s) => { c.moveTo(x+s,y); c.lineTo(x+s,y+s); c.lineTo(x,y+s); c.lineTo(x,y+s*0.5); }, // J shape
+        'Y': (c,x,y,s) => { c.moveTo(x,y); c.lineTo(x,y+s); c.lineTo(x+s,y+s); }, // L shape
+        'Z': (c,x,y,s) => { c.rect(x,y,s/2,s/2); c.moveTo(x+s/2,y); c.lineTo(x+s/2,y+s); } // q shape
     };
 
     function renderStudio() {
         const text = input.value.toUpperCase();
         const scale = parseInt(document.getElementById('scale').value);
-        ctx.fillStyle = '#000'; ctx.fillRect(0, 0, canvas.width, canvas.height);
-        ctx.strokeStyle = document.getElementById('inkColor').value;
-        ctx.lineWidth = 4;
+        const spacing = scale * 0.4; // Space between letters
+        const padding = 15;
         
-        let curX = 30, curY = 40;
-        for (let char of text) {
-            if (char === ' ') { curX += scale; continue; }
-            if (glyphs[char]) {
-                ctx.beginPath();
-                glyphs[char](ctx, curX, curY, scale, scale * 1.5);
-                ctx.stroke();
-                curX += scale + 15;
+        // 1. DYNAMIC WIDTH: Set canvas width to exactly match its CSS container
+        const availableWidth = wrapper.clientWidth - (padding * 2);
+        canvas.width = availableWidth;
+
+        // 2. LAYOUT SIMULATION: Calculate where text goes to figure out total height
+        let simX = 0, simY = 0;
+        let words = text.split(' ');
+        
+        for (let word of words) {
+            let wordWidth = (word.length * scale) + ((word.length - 1) * spacing);
+            
+            // If the word doesn't fit on this line, wrap it!
+            if (simX + wordWidth > availableWidth && simX > 0) {
+                simX = 0;
+                simY += scale * 1.8;
             }
+            
+            // Advance simulation X for the word + a space
+            simX += wordWidth + (scale * 0.8);
+        }
+        
+        // 3. DYNAMIC HEIGHT: Apply calculated height to canvas
+        canvas.height = simY + (scale * 1.5);
+
+        // 4. DRAWING: Setup heavy, brutalist style parameters
+        ctx.fillStyle = '#000'; 
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        
+        ctx.strokeStyle = document.getElementById('inkColor').value;
+        ctx.lineWidth = scale * 0.16; // Creates thick, heavy blocks relative to size
+        ctx.lineCap = 'square';
+        ctx.lineJoin = 'miter';
+        
+        // Draw the text
+        let curX = 0, curY = 0;
+        for (let word of words) {
+            let wordWidth = (word.length * scale) + ((word.length - 1) * spacing);
+            
+            // Wrap text visually
+            if (curX + wordWidth > availableWidth && curX > 0) {
+                curX = 0;
+                curY += scale * 1.8;
+            }
+            
+            for (let char of word) {
+                if (glyphs[char]) {
+                    ctx.beginPath();
+                    glyphs[char](ctx, curX + padding, curY + padding, scale);
+                    ctx.stroke();
+                }
+                curX += scale + spacing;
+            }
+            // Add space size
+            curX += scale * 0.8;
         }
     }
-    document.body.addEventListener('input', renderStudio);
+
+    // Event Listeners for real-time updates
+    ['input', 'change'].forEach(evt => {
+        document.body.addEventListener(evt, renderStudio);
+    });
+    
+    // Ensure canvas redraws correctly if the phone is rotated
+    window.addEventListener('resize', renderStudio);
+    
+    // Download logic
     document.getElementById('downloadBtn').onclick = () => {
-        const link = document.createElement('a'); link.download = 'keposhka.png'; link.href = canvas.toDataURL('image/png'); link.click();
+        const link = document.createElement('a'); 
+        link.download = 'keposhka.png'; 
+        link.href = canvas.toDataURL('image/png'); 
+        link.click();
     };
-    renderStudio();
+    
+    // Initial draw
+    setTimeout(renderStudio, 50); // Small delay ensures CSS wrapper width applies first
 </script>
 </body>
 </html>
