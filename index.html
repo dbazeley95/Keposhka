@@ -101,11 +101,26 @@
             letter-spacing: 1px;
         }
         
+        /* Modern styled native color wrapper */
+        .color-picker-wrapper {
+            position: relative;
+            width: 100%;
+            height: 44px;
+            border-radius: 6px;
+            border: 1px solid #444;
+            background-color: var(--bg-panel);
+            overflow: hidden;
+            cursor: pointer;
+        }
+
         input[type="color"] {
-            width: 100%; 
-            height: 40px; 
-            border: none; 
-            background: none; 
+            position: absolute;
+            top: -5px;
+            left: -5px;
+            width: calc(100% + 10px);
+            height: calc(100% + 10px);
+            border: none;
+            background: none;
             cursor: pointer;
         }
 
@@ -114,14 +129,28 @@
             width: 100%;
         }
 
+        /* Beautiful native dropdown styling override */
         select {
             background-color: var(--bg-panel);
             color: #fff;
             border: 1px solid #444;
-            padding: 8px;
-            border-radius: 4px;
+            padding: 10px 14px;
+            border-radius: 6px;
             font-size: 14px;
             cursor: pointer;
+            appearance: none;
+            -webkit-appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23888888' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+            background-size: 16px;
+            padding-right: 40px;
+            transition: border-color 0.2s;
+        }
+
+        select:focus {
+            outline: none;
+            border-color: var(--accent);
         }
 
         .checkbox-label {
@@ -167,7 +196,7 @@
 
         .output-wrapper { 
             background-color: #000; 
-            padding: 25px; 
+            padding: 20px; 
             border-radius: 8px; 
             width: 100%; 
             box-sizing: border-box; 
@@ -200,10 +229,23 @@
         .footer { 
             margin-top: 30px; 
             text-align: center; 
-            font-size: 11px; 
-            color: #555; 
             text-transform: uppercase; 
             letter-spacing: 2px; 
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .footer-line1 {
+            font-family: 'Keposhka', sans-serif;
+            font-size: 20px;
+            color: #666;
+        }
+
+        .footer-line2 {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-size: 11px;
+            color: #444;
         }
     </style>
 </head>
@@ -218,7 +260,9 @@
         <div class="controls">
             <div class="control-group">
                 <label>Ink Color</label>
-                <input type="color" id="inkColor" value="#ff2a2a">
+                <div class="color-picker-wrapper">
+                    <input type="color" id="inkColor" value="#ff2a2a">
+                </div>
             </div>
             <div class="control-group">
                 <label>Font Size</label>
@@ -250,7 +294,10 @@
         </div>
     </div>
     
-    <div class="footer">Na Na Na Na Na Version 4.0</div>
+    <div class="footer">
+        <div class="footer-line1">Na Na Na Na Na</div>
+        <div class="footer-line2">Version 5.0</div>
+    </div>
 </div>
 
 <script>
@@ -268,15 +315,14 @@
         const fontSize = parseInt(scaleInput.value);
         const alignment = alignSelect.value;
         const isBold = boldCheckbox.checked;
-        const padding = 25;
+        const padding = 20;
         
-        const availableWidth = wrapper.clientWidth - (padding * 2);
-        canvas.width = availableWidth;
+        // Mobile clipping fix: Add explicit right-side layout buffer safety zone
+        const availableWidth = wrapper.clientWidth - (padding * 2) - 10;
+        canvas.width = wrapper.clientWidth - (padding * 2);
 
-        // Apply font characteristics to measure spacing safely
         ctx.font = `${fontSize}px Keposhka, sans-serif`;
         
-        // Split text by hard returns first to guarantee typed newlines are honored
         const paragraphs = text.split('\n');
         let lines = [];
 
@@ -285,7 +331,6 @@
             let currentLine = '';
 
             for (let i = 0; i < words.length; i++) {
-                // Skip empty blocks caused by multiple concurrent spaces
                 if (words[i] === '' && i > 0) continue; 
                 
                 let testLine = currentLine + (currentLine === '' ? '' : ' ') + words[i];
@@ -304,11 +349,10 @@
         const lineHeight = fontSize * 1.3;
         canvas.height = (lines.length * lineHeight) + (padding * 2);
 
-        // Render Background Area
+        // Render Background
         ctx.fillStyle = '#000';
         ctx.fillRect(0, 0, canvas.width, canvas.height);
         
-        // Re-apply drawing state after dimensions update reset
         ctx.font = `${fontSize}px Keposhka, sans-serif`;
         ctx.textBaseline = 'top';
         ctx.fillStyle = colorInput.value;
@@ -316,7 +360,7 @@
         let curY = padding;
         lines.forEach(line => {
             let lineMetrics = ctx.measureText(line);
-            let drawX = padding; // Default left coordinate
+            let drawX = padding; 
 
             if (alignment === 'center') {
                 drawX = padding + (availableWidth - lineMetrics.width) / 2;
@@ -324,10 +368,8 @@
                 drawX = padding + (availableWidth - lineMetrics.width);
             }
 
-            // Draw line
             ctx.fillText(line, drawX, curY);
             
-            // Synthetic bold overlay engine to thicken the core font vectors cleanly
             if (isBold) {
                 ctx.fillText(line, drawX + 1, curY);
                 ctx.fillText(line, drawX, curY + 1);
@@ -337,31 +379,24 @@
         });
     }
 
-    // High-reliability layout initialization guard
     function checkFontAndRender() {
-        // Run lookups inside browser engine to see if layout engine loaded font safely
         if (document.fonts.check('12px Keposhka')) {
             renderStudio();
         } else {
-            // Loop frame calculations dynamically until memory registers the file assets
             requestAnimationFrame(checkFontAndRender);
         }
     }
 
-    // Boot execution hooks
     document.fonts.ready.then(() => {
         checkFontAndRender();
     });
 
-    // Real-time update hooks
     ['input', 'change'].forEach(evt => {
         document.body.addEventListener(evt, renderStudio);
     });
     window.addEventListener('resize', renderStudio);
     
-    // Dynamic naming export engine
     document.getElementById('downloadBtn').onclick = () => {
-        // Strip illegal filename characters safely
         let rawName = input.value.trim().split('\n')[0] || 'keposhka';
         let cleanName = rawName.toLowerCase().replace(/[^a-z0-9_-]/g, '_').substring(0, 50);
         
